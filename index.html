@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ek chhoti si baat ✨</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    height: 100%; overflow: hidden;
+    background: linear-gradient(135deg, #ffe0ec 0%, #ffd1dc 50%, #ffb6c8 100%);
+    font-family: 'Comic Sans MS', 'Segoe UI', cursive, sans-serif;
+    color: #5a2a3a;
+  }
+
+  /* ---------- Intro ---------- */
+  #intro {
+    position: fixed; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    z-index: 50; padding: 24px; transition: opacity 1s ease;
+    background: linear-gradient(135deg, #ffe0ec 0%, #ffc0d4 100%);
+  }
+  #intro .heart-big {
+    font-size: 70px; margin-bottom: 20px;
+    opacity: 0; animation: popIn 1s 0.2s forwards, beat 1.4s 1.2s infinite;
+  }
+  #intro h1 {
+    font-size: clamp(26px, 6.5vw, 38px); font-weight: bold;
+    margin-bottom: 14px; color: #8b1d4d;
+    opacity: 0; animation: fadeUp 1s 0.8s forwards;
+  }
+  #intro p {
+    font-size: clamp(15px, 3.8vw, 18px); opacity: 0;
+    max-width: 380px; line-height: 1.6; color: #7a3a55;
+    animation: fadeUp 1s 1.4s forwards; margin-bottom: 34px;
+  }
+  #startBtn {
+    background: #ff4f8a; color: #fff; border: none;
+    padding: 16px 38px; font-size: 17px; font-weight: bold;
+    cursor: pointer; opacity: 0; animation: fadeUp 1s 2s forwards;
+    font-family: inherit; border-radius: 50px;
+    box-shadow: 0 6px 0 #c41f5d, 0 10px 20px rgba(196, 31, 93, 0.3);
+    transition: all 0.15s; letter-spacing: 1px;
+  }
+  #startBtn:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #c41f5d, 0 4px 8px rgba(196, 31, 93, 0.3);
+  }
+  #intro .hint {
+    position: absolute; bottom: 30px; font-size: 13px; color: #b85577;
+    opacity: 0; animation: fadeUp 1s 2.5s forwards;
+  }
+
+  /* ---------- Slider ---------- */
+  #slider {
+    position: fixed; inset: 0; display: flex;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+  .slide {
+    flex: 0 0 100vw; height: 100vh; position: relative;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 60px 20px 100px;
+    overflow: hidden;
+  }
+  .slide-inner {
+    width: 100%; max-width: 420px;
+    display: flex; flex-direction: column; align-items: center;
+    transform: scale(0.85); opacity: 0;
+    transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .slide.active .slide-inner {
+    transform: scale(1); opacity: 1;
+    transition-delay: 0.2s;
+  }
+  .slide img {
+    width: 100%; max-width: 360px; aspect-ratio: 1;
+    object-fit: cover; border-radius: 24px;
+    border: 4px solid #fff;
+    box-shadow: 0 10px 30px rgba(196, 31, 93, 0.25);
+  }
+  .slide-translation {
+    margin-top: 22px; padding: 14px 22px;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 18px; font-size: clamp(14px, 3.5vw, 17px);
+    color: #8b1d4d; font-style: italic; text-align: center;
+    max-width: 360px; line-height: 1.5;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 2px dashed #ff8fb1;
+  }
+  .slide-tag {
+    margin-top: 14px; font-size: 13px; color: #c41f5d;
+    font-weight: bold; letter-spacing: 2px;
+  }
+
+  /* Different bg per slide for vibe variation */
+  .slide:nth-child(1) { background: linear-gradient(135deg, #fff0f5 0%, #ffd1dc 100%); }
+  .slide:nth-child(2) { background: linear-gradient(135deg, #ffe4ec 0%, #ffb6c8 100%); }
+  .slide:nth-child(3) { background: linear-gradient(135deg, #ffd1e8 0%, #ff9ec4 100%); }
+  .slide:nth-child(4) { background: linear-gradient(135deg, #ffc0d4 0%, #ff8fb1 100%); }
+  .slide:nth-child(5) { background: linear-gradient(135deg, #ffb0c8 0%, #ff7aa3 100%); }
+  .slide:nth-child(6) { background: linear-gradient(135deg, #ff9ec4 0%, #ff6699 100%); }
+
+  /* Floating hearts decoration in background */
+  .bg-hearts {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  }
+  .bg-hearts span {
+    position: absolute; font-size: 24px; opacity: 0.4;
+    animation: drift linear infinite;
+  }
+  @keyframes drift {
+    0% { transform: translateY(110vh) rotate(0deg); }
+    100% { transform: translateY(-20vh) rotate(360deg); }
+  }
+
+  /* ---------- Final slide ---------- */
+  .slide.final {
+    background: linear-gradient(135deg, #ff6699 0%, #c41f5d 100%);
+    padding: 20px 24px;
+    overflow-y: auto;
+    align-items: center;
+    justify-content: center;
+  }
+  .final-inner {
+    text-align: center; color: #fff;
+    width: 100%; max-width: 480px;
+    margin: 0 auto;
+    transform: scale(0.85); opacity: 0;
+    transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .slide.final.active .final-inner {
+    transform: scale(1); opacity: 1; transition-delay: 0.3s;
+  }
+  .final-photo {
+    width: 180px; height: 240px;
+    object-fit: cover;
+    border-radius: 18px;
+    border: 5px solid #fff;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    margin: 0 auto 20px;
+    display: block;
+  }
+  .final-photo-placeholder {
+    width: 180px; height: 240px; border-radius: 18px;
+    background: rgba(255,255,255,0.2); border: 4px dashed #fff;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px; font-size: 50px;
+  }
+  .final-inner h2 {
+    font-size: clamp(22px, 5vw, 28px); margin-bottom: 14px;
+    font-weight: bold;
+  }
+  .final-inner .letter {
+    font-size: clamp(14px, 3.2vw, 16px); line-height: 1.7;
+    margin-bottom: 18px;
+  }
+  .final-inner .sign {
+    font-size: 13px; letter-spacing: 2px; opacity: 0.9;
+    font-style: italic;
+  }
+
+  /* ---------- Nav ---------- */
+  .nav-btn {
+    position: fixed; bottom: 30px;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: #fff; border: none; color: #c41f5d;
+    font-size: 26px; font-weight: bold; cursor: pointer; z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 0 #ff8fb1, 0 8px 20px rgba(196,31,93,0.3);
+    transition: all 0.15s; opacity: 0; font-family: inherit;
+  }
+  .nav-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #ff8fb1, 0 3px 8px rgba(196,31,93,0.3);
+  }
+  .nav-btn.visible { opacity: 1; }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  #prev { left: 24px; }
+  #next { right: 24px; }
+
+  /* ---------- Progress ---------- */
+  #progress {
+    position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 6px; z-index: 10; opacity: 0; transition: opacity 0.5s;
+  }
+  #progress.visible { opacity: 1; }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(196,31,93,0.25); transition: all 0.4s;
+  }
+  .dot.active {
+    background: #c41f5d; width: 24px; border-radius: 8px;
+  }
+
+  .swipe-hint {
+    position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+    color: #8b1d4d; font-size: 13px; z-index: 10; opacity: 0;
+    background: rgba(255,255,255,0.7); padding: 8px 16px;
+    border-radius: 20px; font-weight: bold;
+    transition: opacity 0.5s;
+  }
+  .swipe-hint.visible { opacity: 1; animation: bob 1.5s ease-in-out infinite; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(20px); }
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.3); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes beat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+  @keyframes bob {
+    0%, 100% { transform: translate(-50%, 0); }
+    50% { transform: translate(-50%, -6px); }
+  }
+  @keyframes floatUp {
+    0% { opacity: 0; transform: translateY(0) scale(0.5); }
+    20% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-100vh) scale(1.2); }
+  }
+  .particle {
+    position: fixed; pointer-events: none; z-index: 100;
+    font-size: 30px;
+  }
+</style>
+</head>
+<body>
+
+<div id="intro">
+  <div class="heart-big">💌</div>
+  <h1>ek chhoti si baat... 💕</h1>
+  <p>kuch billiyan meri baat keh rhi hai tujhse 🐱<br>swipe karke padhle, please?</p>
+  <button id="startBtn">SHURU KAREIN ✨</button>
+  <div class="hint">made just for you, baby 💗</div>
+</div>
+
+<div id="progress"></div>
+
+<div id="slider">
+
+  <!-- Slide 1 -->
+  <div class="slide">
+    <div class="bg-hearts"></div>
+    <div class="slide-inner">
+      <img src="img/1.png" alt="meme 1">
+      <div class="slide-translation">"mrig naini, tu na jaane..."<br><span style="font-size: 13px; opacity: 0.8;">(o doe-eyed one, you don't even know)</span></div>
+      <div class="slide-tag">— SLIDE 1 OF 7 —</div>
+    </div>
+  </div>
+
+  <!-- Slide 2 -->
+  <div class="slide">
+    <div class="bg-hearts"></div>
+    <div class="slide-inner">
+      <img src="img/2.png" alt="meme 2">
+      <div class="slide-translation">"prem kitna mere mann mei haiii..."<br><span style="font-size: 13px; opacity: 0.8;">(how much love is in my heart)</span></div>
+      <div class="slide-tag">— bohot zyada btw —</div>
+    </div>
+  </div>
+
+  <!-- Slide 3 -->
+  <div class="slide">
+    <div class="bg-hearts"></div>
+    <div class="slide-inner">
+      <img src="img/3.png" alt="meme 3">
+      <div class="slide-translation">"tera phool sa hai anggg..."<br><span style="font-size: 13px; opacity: 0.8;">(your being is like a flower 🌹)</span></div>
+      <div class="slide-tag">— sach mei —</div>
+    </div>
+  </div>
+
+  <!-- Slide 4 -->
+  <div class="slide">
+    <div class="bg-hearts"></div>
+    <div class="slide-inner">
+      <img src="img/4.png" alt="meme 4">
+      <div class="slide-translation">"tere angg mei hai rangg..."<br><span style="font-size: 13px; opacity: 0.8;">(you have a color of your own)</span></div>
+      <div class="slide-tag">— meri zindagi ka rang —</div>
+    </div>
+  </div>
+
+  <!-- Slide 5 -->
+  <div class="slide">
+    <div class="bg-hearts"></div>
+    <div class="slide-inner">
+      <img src="img/5.png" alt="meme 5">
+      <div class="slide-translation">"tere rang ke mai sangg, goriyeee..."<br><span style="font-size: 13px; opacity: 0.8;">(i'm with your colors, my beautiful one)</span></div>
+      <div class="slide-tag">— hamesha —</div>
+    </div>
+  </div>
+
+  <!-- Slide 6 -->
+  <div class="slide">
+    <div class="bg-hearts"></div>
+    <div class="slide-inner">
+      <img src="img/6.png" alt="meme 6">
+      <div class="slide-translation">"sajnaa se kahe aaye laaj, sajjni?" 👇<br><span style="font-size: 13px; opacity: 0.8;">(why feel shy with the one who loves you?)</span></div>
+      <div class="slide-tag">— ek aur swipe baki hai —</div>
+    </div>
+  </div>
+
+  <!-- FINAL SLIDE — your real photo together -->
+  <div class="slide final">
+    <div class="final-inner">
+      <!-- Replace this placeholder with:  -->
+<img src="img/us.png" class="final-photo" alt="us">
+      <h2>par sacchi baat? 💗</h2>
+      <p class="letter">
+        sorry. genuinely.<br><br>
+        billuus ke peeche chhupke maine bohot kuch keh diya, par jo asli baat hai woh ye hai ki<br><br>
+        thodi door aa gaya hoon, par mera dil wahi hai. tere paas.<br>
+        gussa ho jaa, daant le, bas wapas baat karle.<br><br>
+        i miss us so much. badly. 🥺
+      </p>
+      <div class="sign">— CECC for always hehe 💌</div>
+    </div>
+  </div>
+</div>
+
+<button class="nav-btn" id="prev" aria-label="previous">‹</button>
+<button class="nav-btn" id="next" aria-label="next">›</button>
+<div class="swipe-hint" id="swipeHint">👉 swipe karo</div>
+
+<script>
+  const slider = document.getElementById('slider');
+  const slides = document.querySelectorAll('.slide');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const intro = document.getElementById('intro');
+  const startBtn = document.getElementById('startBtn');
+  const progress = document.getElementById('progress');
+  const swipeHint = document.getElementById('swipeHint');
+  let current = 0;
+  const total = slides.length;
+
+  // Progress dots
+  for (let i = 0; i < total; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    progress.appendChild(dot);
+  }
+  const dots = document.querySelectorAll('.dot');
+
+  // Decorative floating hearts in each slide bg
+  slides.forEach(slide => {
+    const bg = slide.querySelector('.bg-hearts');
+    if (!bg) return;
+    const hearts = ['💗', '💕', '🌸', '✨', '💖'];
+    for (let i = 0; i < 8; i++) {
+      const h = document.createElement('span');
+      h.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+      h.style.left = (Math.random() * 95) + '%';
+      h.style.animationDuration = (12 + Math.random() * 10) + 's';
+      h.style.animationDelay = (-Math.random() * 15) + 's';
+      h.style.fontSize = (16 + Math.random() * 14) + 'px';
+      bg.appendChild(h);
+    }
+  });
+
+  function goTo(index) {
+    if (index < 0 || index >= total) return;
+    current = index;
+    slider.style.transform = `translateX(-${index * 100}vw)`;
+    slides.forEach((s, i) => s.classList.toggle('active', i === index));
+    dots.forEach((d, i) => d.classList.toggle('active', i === index));
+    prev.disabled = index === 0;
+    next.disabled = index === total - 1;
+    if (index === total - 1) launchCelebration();
+  }
+
+  prev.addEventListener('click', () => goTo(current - 1));
+  next.addEventListener('click', () => goTo(current + 1));
+
+  document.addEventListener('keydown', (e) => {
+    if (intro.style.display === 'none') {
+      if (e.key === 'ArrowRight') goTo(current + 1);
+      if (e.key === 'ArrowLeft') goTo(current - 1);
+    }
+  });
+
+  let touchStartX = 0, touchEndX = 0;
+  slider.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+  slider.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) goTo(current + 1);
+      else goTo(current - 1);
+    }
+  }, { passive: true });
+
+  startBtn.addEventListener('click', () => {
+    intro.style.opacity = '0';
+    setTimeout(() => {
+      intro.style.display = 'none';
+      slides[0].classList.add('active');
+      progress.classList.add('visible');
+      prev.classList.add('visible');
+      next.classList.add('visible');
+      swipeHint.classList.add('visible');
+      setTimeout(() => swipeHint.classList.remove('visible'), 3500);
+    }, 1000);
+  });
+
+  function launchCelebration() {
+    const items = ['💗', '💕', '💖', '🌸', '✨', '🌹', '💌'];
+    for (let i = 0; i < 35; i++) {
+      setTimeout(() => {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.textContent = items[Math.floor(Math.random() * items.length)];
+        p.style.left = (Math.random() * 100) + 'vw';
+        p.style.bottom = '0';
+        p.style.fontSize = (20 + Math.random() * 22) + 'px';
+        p.style.animation = `floatUp ${3.5 + Math.random() * 3}s linear forwards`;
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 7000);
+      }, i * 150);
+    }
+  }
+</script>
+
+</body>
+</html>
